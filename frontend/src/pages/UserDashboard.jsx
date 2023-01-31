@@ -1,16 +1,42 @@
 import { useEffect, useState } from "react";
 
+import { useSelector, useDispatch } from "react-redux";
+
 import { Modal } from "../components/Modal";
+
+import { useNavigate } from "react-router-dom";
+
+import { toast } from "react-toastify";
+
+import { depositMoney, reset } from "../features/auth/authSlice";
+
+import Spinner from "../components/Spinner";
 
 function UserDashboard() {
     const [userData, setUserData] = useState([]);
     const [open, setOpen] = useState(false);
     const [isTransferring, setIsTransferring] = useState(false);
     const [amount, setAmount] = useState(0);
-    const [destinationWallet, setDestinationWallet] = useState({});
     const [errorMessage, setErrorMessage] = useState("");
 
+    // const { user, isLoading, isError, isSuccess, message } = useSelector(
+    //     (state) => state.auth
+    // );
+
+    const dispatch = useDispatch();
+
+    const navigate = useNavigate();
+
     useEffect(() => {
+        // if (isError) {
+        //     toast.error(message);
+        // }
+
+        // if (isSuccess) {
+        //     navigate("/user");
+        // }
+
+        // dispatch(reset());
         const userData = JSON.parse(localStorage.getItem("user"));
 
         if (userData) {
@@ -20,6 +46,20 @@ function UserDashboard() {
         // console.log(userData);
     }, []);
 
+    const deposit = () => {
+        // const userInfo = JSON.parse(localStorage.getItem("user"));
+
+        const userData = {
+            // id: userInfo.id,
+            amount,
+        };
+
+        // localStorage.setItem("userData", JSON.stringify(userData));
+
+        // navigate();
+        console.log(userData);
+        dispatch(depositMoney(userData));
+    };
     return (
         <>
             <section className="container shadow-lg">
@@ -49,7 +89,6 @@ function UserDashboard() {
                                     className="bg-red-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600"
                                     onClick={() => {
                                         setIsTransferring(false);
-                                        // setErrorMessage("");
                                         setOpen(true);
                                     }}
                                 >
@@ -72,7 +111,6 @@ function UserDashboard() {
                                     className="bg-red-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600"
                                     onClick={() => {
                                         setIsTransferring(true);
-                                        // setErrorMessage("");
                                         setOpen(true);
                                     }}
                                 >
@@ -136,7 +174,7 @@ function UserDashboard() {
                         <button
                             type="button"
                             className="bg-red-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600"
-                            // onClick={addTransaction}
+                            onClick={() => dispatch(depositMoney(amount))}
                         >
                             {isTransferring ? "Transfer" : "Add"}
                         </button>

@@ -614,16 +614,16 @@ const depositMoney = asyncHandler(async (req, res) => {
 
             const newAccountBalance = user.accountBalance + parseFloat(amount);
 
-            if (user.authDeposit === true) {
-                await User.updateOne(
-                    { accountNumber: user.accountNumber },
-                    { $set: { accountBalance: newAccountBalance } }
-                );
+            // if (user.authDeposit === true) {
+            await User.updateOne(
+                { accountNumber: user.accountNumber },
+                { $set: { accountBalance: newAccountBalance } }
+            );
 
-                res.json("You have successfully deposited to your account!");
-            } else {
-                res.json("You are not authorized");
-            }
+            res.json("You have successfully deposited to your account!");
+            // } else {
+            //     res.json("You are not authorized");
+            // }
         } catch (error) {
             console.log(error);
 
