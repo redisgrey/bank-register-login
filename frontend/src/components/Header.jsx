@@ -22,7 +22,7 @@ function Header() {
     };
 
     return (
-        <header className="w-[100%] bg-black">
+        <header className=" bg-black flex items-center justify-between md:px-10 md:mx-0">
             <div className="logo navbar-brand">
                 <Link to="/">
                     <img
@@ -51,8 +51,11 @@ function Header() {
                 pathname === "/verify-transcode" ? (
                     <>
                         <li className="nav-item">
-                            <button className="btn" onClick={onLogout}>
-                                <FaSignOutAlt /> Logout
+                            <button
+                                className="btn text-white"
+                                onClick={onLogout}
+                            >
+                                <FaSignOutAlt className="text-white" /> Logout
                             </button>
                         </li>
                     </>

@@ -353,7 +353,13 @@ const loginUser = asyncHandler(async (req, res) => {
         user.isEnrolledToOnlineBanking === true &&
         user.isVerified === true
     ) {
-        res.json({ id: user.id, token: generateToken(user._id) });
+        res.json({
+            id: user.id,
+            token: generateToken(user._id),
+            accountNumber: user.accountNumber,
+            accountBalance: user.accountBalance,
+            accountType: user.accountType,
+        });
     } else {
         res.status(400);
 

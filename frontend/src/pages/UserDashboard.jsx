@@ -1,47 +1,69 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 function UserDashboard() {
+    const [userData, setUserData] = useState([]);
+
+    useEffect(() => {
+        const userData = JSON.parse(localStorage.getItem("user"));
+
+        if (userData) {
+            setUserData(userData);
+        }
+
+        // console.log(userData);
+    }, []);
+
     return (
         <>
-            <section className="container">
-                <h1 className="display-3 text-center mb-2">Welcome User!</h1>
+            <section className="container shadow-lg">
+                <div className="flex  mt-5 mx-auto md:w-[50%] ">
+                    <form className="flex-auto p-6">
+                        <div className="w-full flex-none text-sm font-medium text-gray-500 mt-2">
+                            {userData.accountType}
+                        </div>
 
-                <h2 className="text-center">What do you want to do today?</h2>
-                <div className="list-group text-center">
-                    <Link
-                        to="/balance"
-                        className="list-group-item list-group-item-action"
-                    >
-                        Check Balance
-                    </Link>
+                        <div className="w-full flex-none text-sm font-medium text-gray-500 mt-2">
+                            Account Number:
+                        </div>
 
-                    <Link
-                        to="/verify-deposit"
-                        className="list-group-item list-group-item-action"
-                    >
-                        Deposit Money
-                    </Link>
+                        <div className="flex flex-wrap">
+                            <h1 className="flex-auto text-xl  text-slate-900">
+                                {userData.accountNumber}
+                            </h1>
+                            <div className="text-xl  text-black-500">
+                                PHP {userData.accountBalance}
+                            </div>
+                        </div>
 
-                    <Link
-                        to="/verify-withdraw"
-                        className="list-group-item list-group-item-action"
-                    >
-                        Withdraw Money
-                    </Link>
+                        <div className="flex flex-row mt-2">
+                            <div className="px-2 py-3 text-right">
+                                <button
+                                    type="button"
+                                    className="bg-red-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600"
+                                >
+                                    Deposit
+                                </button>
+                            </div>
 
-                    <Link
-                        to="/verify-transfer"
-                        className="list-group-item list-group-item-action"
-                    >
-                        Transfer Money
-                    </Link>
+                            <div className="px-2 py-3 text-right">
+                                <button
+                                    type="button"
+                                    className="bg-red-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600"
+                                >
+                                    Withdraw
+                                </button>
+                            </div>
 
-                    <Link
-                        to="/update-profile"
-                        className="list-group-item list-group-item-action"
-                    >
-                        Update your profile
-                    </Link>
+                            <div className="px-2 py-3 text-right">
+                                <button
+                                    type="button"
+                                    className="bg-red-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600"
+                                >
+                                    Transfer
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </section>
         </>
