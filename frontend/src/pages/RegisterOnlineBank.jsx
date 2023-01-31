@@ -12,12 +12,14 @@ import Spinner from "../components/Spinner";
 
 function Login() {
     const [registerOnlineBank, setRegisterOnlineBank] = useState({
+        fullName: "",
         emailAddress: "",
         password: "",
         accountNumber: "",
     });
 
-    const { emailAddress, password, accountNumber } = registerOnlineBank;
+    const { fullName, emailAddress, password, accountType, accountNumber } =
+        registerOnlineBank;
 
     const navigate = useNavigate();
 
@@ -33,7 +35,7 @@ function Login() {
         }
 
         if (isSuccess) {
-            navigate("/success-register-online");
+            navigate("/verify-number");
         }
 
         dispatch(reset());
@@ -50,11 +52,14 @@ function Login() {
         e.preventDefault();
 
         const userData = {
+            fullName,
+            accountType,
             emailAddress,
             password,
             accountNumber,
         };
 
+        // console.log(userData);
         dispatch(registerOnlineBanking(userData));
     };
 
@@ -79,6 +84,56 @@ function Login() {
                     </div>
                     <form className="mt-8 space-y-6" onSubmit={onSubmit}>
                         <div className="-space-y-px rounded-md shadow-sm">
+                            <div>
+                                <label htmlFor="fullName" className="sr-only">
+                                    Full Name
+                                </label>
+                                <input
+                                    id="fullName"
+                                    name="fullName"
+                                    type="text"
+                                    value={fullName}
+                                    onChange={onChange}
+                                    required
+                                    className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                    placeholder="Full Name"
+                                />
+                            </div>
+                            <div className="flex flex-row justify-around my-3">
+                                <div className="flex items-center">
+                                    <input
+                                        id="savingsAccount"
+                                        name="accountType"
+                                        type="radio"
+                                        value={"Savings Account"}
+                                        onChange={onChange}
+                                        className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                    />
+                                    <label
+                                        htmlFor="savingsAccount"
+                                        className="ml-3 block text-sm font-medium text-gray-700"
+                                    >
+                                        Savings Account
+                                    </label>
+                                </div>
+                                <div className="flex items-center">
+                                    <input
+                                        id="checkingAccount"
+                                        name="accountType"
+                                        type="radio"
+                                        value={"Checking Account"}
+                                        onChange={onChange}
+                                        className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                    />
+                                    <label
+                                        htmlFor="checkingAccount"
+                                        className="ml-3 block text-sm font-medium text-gray-700"
+                                    >
+                                        Checking Account
+                                    </label>
+                                </div>
+                            </div>
+
                             <div>
                                 <label
                                     htmlFor="accountNumber"

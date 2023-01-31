@@ -167,7 +167,7 @@ const verifyNumber = asyncHandler(async (req, res) => {
         const result = await otp.save();
 
         res.status(201).json({
-            message: "OTP sent successfully!",
+            number,
         });
     } else {
         res.status(400);
@@ -180,9 +180,9 @@ const verifyNumber = asyncHandler(async (req, res) => {
 // @route   POST /api/users/verify-code
 // @access  Private
 const verifyCode = asyncHandler(async (req, res) => {
-    let { mobileNumber, otpNumber } = req.body;
+    let { otpNumber } = req.body;
 
-    const otpHolder = await OTPModel.find({ mobileNumber: mobileNumber });
+    const otpHolder = await OTPModel.find({ otpNumber: otpNumber });
 
     if (otpHolder.length === 0) {
         res.json("You input an expired OTP number");
@@ -192,15 +192,15 @@ const verifyCode = asyncHandler(async (req, res) => {
 
     const validUser = await bcrypt.compare(otpNumber, rightOtpFind.otp);
 
-    if (rightOtpFind.number === mobileNumber && validUser) {
+    if (validUser) {
         // isVerify User
         const updateVerify = await User.updateOne(
-            { mobileNumber: mobileNumber },
+            { mobileNumber: rightOtpFind.number },
             { $set: { isVerified: true } }
         );
 
         const OTPDelete = OTPModel.deleteMany({
-            number: mobileNumber,
+            number: rightOtpFind.number,
         });
 
         res.json("Registration and Verification Successful!");
@@ -294,15 +294,22 @@ const updateAccount = asyncHandler(async (req, res) => {
 // * password
 // * account number
 const registerOnlineBanking = asyncHandler(async (req, res) => {
-    const { emailAddress, password, accountNumber } = req.body;
+    const { fullName, accountType, emailAddress, password, accountNumber } =
+        req.body;
 
-    if (!emailAddress || !password || !accountNumber) {
+    if (
+        !emailAddress ||
+        !password ||
+        !accountNumber ||
+        !fullName ||
+        !accountType
+    ) {
         res.status(400);
 
         throw new Error("Please add all fields");
     }
 
-    const user = await User.findOne({ emailAddress: emailAddress });
+    const user = await User.findOne({ accountNumber: accountNumber });
 
     if (
         user &&
