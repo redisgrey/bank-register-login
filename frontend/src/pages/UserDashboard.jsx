@@ -14,37 +14,47 @@ import Spinner from "../components/Spinner";
 
 function UserDashboard() {
     const [userData, setUserData] = useState([]);
+
     const [open, setOpen] = useState(false);
+
     const [isTransferring, setIsTransferring] = useState(false);
+
     const [amount, setAmount] = useState(0);
+
     const [errorMessage, setErrorMessage] = useState("");
 
-    // const { user, isLoading, isError, isSuccess, message } = useSelector(
-    //     (state) => state.auth
-    // );
+    const [rerender, setRerender] = useState(false);
+
+    const { user, isLoading, isError, isSuccess, message } = useSelector(
+        (state) => state.auth
+    );
 
     const dispatch = useDispatch();
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        // if (isError) {
-        //     toast.error(message);
-        // }
-
-        // if (isSuccess) {
-        //     navigate("/user");
-        // }
-
-        // dispatch(reset());
-        const userData = JSON.parse(localStorage.getItem("user"));
+        var userData = JSON.parse(localStorage.getItem("user"));
 
         if (userData) {
             setUserData(userData);
         }
 
+        setRerender(!rerender);
         // console.log(userData);
     }, []);
+
+    useEffect(() => {
+        if (isError) {
+            toast.error(message);
+        }
+
+        if (isSuccess) {
+            navigate("/user");
+        }
+
+        dispatch(reset());
+    }, [user, isLoading, isError, isSuccess, message, navigate, dispatch]);
 
     const deposit = () => {
         // const userInfo = JSON.parse(localStorage.getItem("user"));
@@ -54,10 +64,11 @@ function UserDashboard() {
             amount,
         };
 
-        // localStorage.setItem("userData", JSON.stringify(userData));
+        localStorage.setItem("userData", JSON.stringify(userData));
 
         // navigate();
         console.log(userData);
+
         dispatch(depositMoney(userData));
     };
     return (
@@ -174,7 +185,7 @@ function UserDashboard() {
                         <button
                             type="button"
                             className="bg-red-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600"
-                            onClick={() => dispatch(depositMoney(amount))}
+                            onClick={deposit}
                         >
                             {isTransferring ? "Transfer" : "Add"}
                         </button>
