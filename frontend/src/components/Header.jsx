@@ -1,4 +1,4 @@
-import { FaSignInAlt, FaSignOutAlt, FaUser } from "react-icons/fa";
+import { FaSignOutAlt } from "react-icons/fa";
 
 import { Link, useNavigate } from "react-router-dom";
 
@@ -22,9 +22,15 @@ function Header() {
     };
 
     return (
-        <header className="navbar container-fluid flex flex-row">
+        <header className="w-[100%] bg-black">
             <div className="logo navbar-brand">
-                <Link to="/">OTRBN</Link>
+                <Link to="/">
+                    <img
+                        src="https://i.ibb.co/wNdJB9k/Making-the-future-golden-1.png"
+                        border="0"
+                        className="w-[350px] h-[120px]"
+                    />
+                </Link>
             </div>
             <ul className="navbar-nav flex flex-row space-x-10">
                 {(user && pathname === "/user") ||
@@ -52,23 +58,23 @@ function Header() {
                     </>
                 ) : (
                     <>
-                        <li className="nav-item">
+                        {/* <li className="nav-item">
                             <Link className="nav-link" to="/login">
                                 Login
                             </Link>
-                        </li>
+                        </li> */}
 
-                        <li className="nav-item">
+                        {/* <li className="nav-item">
                             <Link className="nav-link" to="/register">
                                 Register
                             </Link>
-                        </li>
+                        </li> */}
 
-                        <li className="nav-item">
+                        {/* <li className="nav-item">
                             <Link className="nav-link" to="/register-online">
                                 Register to Online Banking
                             </Link>
-                        </li>
+                        </li> */}
                     </>
                 )}
             </ul>

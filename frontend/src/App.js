@@ -14,7 +14,7 @@ import Login from "./pages/Login";
 
 import LoginAdmin from "./pages/LoginAdmin";
 
-import Register from "./pages/Register";
+// import Register from "./pages/Register";
 
 import VerifyNumber from "./pages/VerifyNumber";
 
@@ -71,7 +71,7 @@ function App() {
 
                         <Route path="/login-admin" element={<LoginAdmin />} />
 
-                        <Route path="/register" element={<Register />} />
+                        {/* <Route path="/register" element={<Register />} /> */}
 
                         <Route
                             path="/register-online"
