@@ -22,7 +22,7 @@ function Header() {
     };
 
     return (
-        <header className=" bg-black flex items-center justify-between md:px-10 md:mx-0">
+        <header className=" bg-black flex items-center relative justify-between md:px-10 md:mx-0">
             <div className="logo navbar-brand">
                 <Link to="/">
                     <img

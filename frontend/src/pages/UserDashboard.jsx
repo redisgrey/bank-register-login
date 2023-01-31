@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
 
+import { Modal } from "../components/Modal";
+
 function UserDashboard() {
     const [userData, setUserData] = useState([]);
+    const [open, setOpen] = useState(false);
+    const [isTransferring, setIsTransferring] = useState(false);
+    const [amount, setAmount] = useState(0);
+    const [destinationWallet, setDestinationWallet] = useState({});
+    const [errorMessage, setErrorMessage] = useState("");
 
     useEffect(() => {
         const userData = JSON.parse(localStorage.getItem("user"));
@@ -40,6 +47,11 @@ function UserDashboard() {
                                 <button
                                     type="button"
                                     className="bg-red-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600"
+                                    onClick={() => {
+                                        setIsTransferring(false);
+                                        // setErrorMessage("");
+                                        setOpen(true);
+                                    }}
                                 >
                                     Deposit
                                 </button>
@@ -58,6 +70,11 @@ function UserDashboard() {
                                 <button
                                     type="button"
                                     className="bg-red-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600"
+                                    onClick={() => {
+                                        setIsTransferring(true);
+                                        // setErrorMessage("");
+                                        setOpen(true);
+                                    }}
                                 >
                                     Transfer
                                 </button>
@@ -66,6 +83,67 @@ function UserDashboard() {
                     </form>
                 </div>
             </section>
+
+            <Modal
+                open={open}
+                setOpen={setOpen}
+                title={
+                    isTransferring
+                        ? "Transfer money to other wallet"
+                        : "Add money to your wallet"
+                }
+                body={
+                    <>
+                        {isTransferring && (
+                            <div className="mt-2">
+                                {/* <SelectContact
+                                    title="Destination contact"
+                                    contacts={contacts}
+                                    contact={destinationWallet}
+                                    setContact={setDestinationWallet}
+                                /> */}
+                            </div>
+                        )}
+
+                        <div className="mt-2">
+                            <label
+                                htmlFor="amount"
+                                className="block text-sm font-medium text-gray-700"
+                            >
+                                Amount
+                            </label>
+                            <input
+                                type="number"
+                                id="amount"
+                                value={amount}
+                                min={0}
+                                onChange={(e) => setAmount(e.target.value)}
+                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                placeholder="0.00"
+                            />
+                        </div>
+                    </>
+                }
+                footer={
+                    <>
+                        <button
+                            type="button"
+                            className="bg-black border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-600"
+                            onClick={() => setOpen(false)}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="button"
+                            className="bg-red-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600"
+                            // onClick={addTransaction}
+                        >
+                            {isTransferring ? "Transfer" : "Add"}
+                        </button>
+                    </>
+                }
+                errorMessage={errorMessage}
+            />
         </>
     );
 }
