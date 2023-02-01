@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import axios from "axios";
+
 import { useSelector, useDispatch } from "react-redux";
 
 import { Modal } from "../components/Modal";
@@ -8,12 +10,14 @@ import { useNavigate } from "react-router-dom";
 
 import { toast } from "react-toastify";
 
-import { depositMoney, reset } from "../features/auth/authSlice";
+import { depositMoney, checkBalance, reset } from "../features/auth/authSlice";
 
 import Spinner from "../components/Spinner";
 
 function UserDashboard() {
     const [userData, setUserData] = useState([]);
+
+    const [balance, setBalance] = useState(0);
 
     const [open, setOpen] = useState(false);
 
@@ -22,8 +26,6 @@ function UserDashboard() {
     const [amount, setAmount] = useState(0);
 
     const [errorMessage, setErrorMessage] = useState("");
-
-    const [rerender, setRerender] = useState(false);
 
     const { user, isLoading, isError, isSuccess, message } = useSelector(
         (state) => state.auth
@@ -34,13 +36,12 @@ function UserDashboard() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        var userData = JSON.parse(localStorage.getItem("user"));
+        const userData = JSON.parse(localStorage.getItem("user"));
 
         if (userData) {
             setUserData(userData);
         }
 
-        setRerender(!rerender);
         // console.log(userData);
     }, []);
 
@@ -56,17 +57,25 @@ function UserDashboard() {
         dispatch(reset());
     }, [user, isLoading, isError, isSuccess, message, navigate, dispatch]);
 
-    const deposit = () => {
-        // const userInfo = JSON.parse(localStorage.getItem("user"));
+    useEffect(() => {
+        async function fetchBalance() {
+            const result = await dispatch(checkBalance());
 
+            if (result) {
+                setBalance(Number(result.payload));
+            }
+
+            console.log(result.payload);
+        }
+
+        fetchBalance();
+    }, []);
+
+    const deposit = () => {
         const userData = {
-            // id: userInfo.id,
             amount,
         };
 
-        localStorage.setItem("userData", JSON.stringify(userData));
-
-        // navigate();
         console.log(userData);
 
         dispatch(depositMoney(userData));
@@ -89,7 +98,7 @@ function UserDashboard() {
                                 {userData.accountNumber}
                             </h1>
                             <div className="text-xl  text-black-500">
-                                PHP {userData.accountBalance}
+                                PHP {balance}
                             </div>
                         </div>
 

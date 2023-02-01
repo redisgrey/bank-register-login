@@ -357,7 +357,6 @@ const loginUser = asyncHandler(async (req, res) => {
             id: user.id,
             token: generateToken(user._id),
             accountNumber: user.accountNumber,
-            accountBalance: user.accountBalance,
             accountType: user.accountType,
         });
     } else {
