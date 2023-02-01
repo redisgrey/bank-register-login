@@ -10,7 +10,12 @@ import { useNavigate } from "react-router-dom";
 
 import { toast } from "react-toastify";
 
-import { depositMoney, checkBalance, reset } from "../features/auth/authSlice";
+import {
+    depositMoney,
+    checkBalance,
+    transferMoney,
+    reset,
+} from "../features/auth/authSlice";
 
 import Spinner from "../components/Spinner";
 
@@ -27,10 +32,6 @@ function UserDashboard() {
 
     const [errorMessage, setErrorMessage] = useState("");
 
-    const { user, isLoading, isError, isSuccess, message } = useSelector(
-        (state) => state.auth
-    );
-
     const dispatch = useDispatch();
 
     const navigate = useNavigate();
@@ -45,17 +46,9 @@ function UserDashboard() {
         // console.log(userData);
     }, []);
 
-    useEffect(() => {
-        if (isError) {
-            toast.error(message);
-        }
+    const user = JSON.parse(localStorage.getItem("user"));
 
-        if (isSuccess) {
-            navigate("/user");
-        }
-
-        dispatch(reset());
-    }, [user, isLoading, isError, isSuccess, message, navigate, dispatch]);
+    const token = user.token;
 
     useEffect(() => {
         async function fetchBalance() {
@@ -68,17 +61,37 @@ function UserDashboard() {
             console.log(result.payload);
         }
 
-        fetchBalance();
-    }, []);
+        if (token) {
+            fetchBalance();
+        }
+
+        // console.log(userData);
+    }, [token]);
 
     const deposit = () => {
         const userData = {
             amount,
         };
 
-        console.log(userData);
-
         dispatch(depositMoney(userData));
+
+        toast.success("Deposit Successful");
+
+        setOpen(false);
+    };
+
+    const transfer = () => {
+        const userData = {
+            amount,
+        };
+
+        //console.log(userData);
+
+        dispatch(transferMoney(userData));
+
+        toast.success("Transfer Successful");
+
+        setOpen(false);
     };
     return (
         <>
@@ -120,15 +133,6 @@ function UserDashboard() {
                                 <button
                                     type="button"
                                     className="bg-red-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600"
-                                >
-                                    Withdraw
-                                </button>
-                            </div>
-
-                            <div className="px-2 py-3 text-right">
-                                <button
-                                    type="button"
-                                    className="bg-red-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600"
                                     onClick={() => {
                                         setIsTransferring(true);
                                         setOpen(true);
@@ -147,8 +151,8 @@ function UserDashboard() {
                 setOpen={setOpen}
                 title={
                     isTransferring
-                        ? "Transfer money to other wallet"
-                        : "Add money to your wallet"
+                        ? "Transfer money to other account"
+                        : "Add money to your account"
                 }
                 body={
                     <>
@@ -174,7 +178,6 @@ function UserDashboard() {
                                 type="number"
                                 id="amount"
                                 value={amount}
-                                min={0}
                                 onChange={(e) => setAmount(e.target.value)}
                                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                 placeholder="0.00"
@@ -194,7 +197,7 @@ function UserDashboard() {
                         <button
                             type="button"
                             className="bg-red-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600"
-                            onClick={deposit}
+                            onClick={isTransferring ? transfer : deposit}
                         >
                             {isTransferring ? "Transfer" : "Add"}
                         </button>
