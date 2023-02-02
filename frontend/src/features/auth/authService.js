@@ -275,8 +275,12 @@ const verifyTransCode = async (userData, user) => {
 };
 
 // Logout User
-const logout = () => {
+const logout = async (user) => {
+    const response = await axios.get("/api/users/logout");
+
     localStorage.removeItem("user");
+
+    return response.data;
 };
 
 const authService = {

@@ -48,12 +48,8 @@ function Welcome() {
             toast.error(message);
         }
 
-        if (isSuccess) {
-            navigate("/user");
-        }
-
         dispatch(reset());
-    }, [user, isError, isSuccess, message, navigate, dispatch]);
+    }, [user, isError, message, navigate, dispatch]);
 
     const onChange = (e) => {
         setLoginForm((prevState) => ({
@@ -81,7 +77,6 @@ function Welcome() {
             otpNumber,
         };
 
-        //console.log(userData.otpCode);
         await dispatch(verifyOtpNumber(userData));
 
         setOpen(false);
@@ -96,6 +91,8 @@ function Welcome() {
         };
 
         dispatch(login(userData));
+
+        navigate("/user");
     };
 
     if (isLoading) {
@@ -104,8 +101,8 @@ function Welcome() {
 
     return (
         <>
-            <div className="flex min-h-full items-center justify-center py-12 px-4 shadow-lg sm:px-6 lg:px-8">
-                <div className="w-full max-w-md space-y-8">
+            <div className="flex justify-center py-12 px-4 shadow-lg sm:px-6 md:min-h-[85vh] lg:px-8">
+                <div className=" w-full max-w-md space-y-8">
                     <div>
                         <img
                             className="mx-auto h-12 w-auto"
@@ -117,7 +114,7 @@ function Welcome() {
                             Sign in to your account
                         </h2>
                     </div>
-                    <form className="mt-8 space-y-6" onSubmit={onSubmit}>
+                    <form className="mt-8 space-y-6">
                         <div className="-space-y-px rounded-md shadow-sm">
                             <div>
                                 <label

@@ -401,6 +401,11 @@ const logoutUser = asyncHandler(async (req, res) => {
                 { $set: { authTransfer: false } }
             );
 
+            await User.updateOne(
+                { id: user._id },
+                { $set: { isVerified: false } }
+            );
+
             res.json("User successfully logged out!");
         } catch (error) {
             console.log(error);

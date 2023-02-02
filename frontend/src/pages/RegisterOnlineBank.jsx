@@ -69,7 +69,7 @@ function Login() {
 
     return (
         <>
-            <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+            <div className="flex  justify-center shadow-lg py-12 px-4 sm:px-6 md:min-h-[85vh] lg:px-8">
                 <div className="w-full max-w-md space-y-8">
                     <div>
                         <img

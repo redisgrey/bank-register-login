@@ -8,9 +8,9 @@
     font-family: Poppins;
 }
 
-/* body {
-    border: 2px solid red;
-} */
+body {
+    height: 100vh;
+}
 
 .loadingSpinnerContainer {
     position: fixed;
