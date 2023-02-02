@@ -203,7 +203,7 @@ const verifyCode = asyncHandler(async (req, res) => {
             number: rightOtpFind.number,
         });
 
-        res.json({ message: "Verification Successful!" });
+        res.json("Verification Successful!");
     } else {
         // const accountDelete = User.deleteOne({
         //     number: mobileNumber,

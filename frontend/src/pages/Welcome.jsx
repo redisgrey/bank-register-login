@@ -27,11 +27,11 @@ function Welcome() {
 
     const [open, setOpen] = useState(false);
 
-    const [otpCode, setOtpCode] = useState("");
-
     const [otpSent, setOtpSent] = useState(false);
 
     const [mobileNumber, setMobileNumber] = useState("");
+
+    const [otpNumber, setOtpNumber] = useState("");
 
     const [errorMessage, setErrorMessage] = useState("");
 
@@ -48,8 +48,12 @@ function Welcome() {
             toast.error(message);
         }
 
+        if (isSuccess) {
+            navigate("/user");
+        }
+
         dispatch(reset());
-    }, [user, isError, message, navigate, dispatch]);
+    }, [user, isError, isSuccess, message, navigate, dispatch]);
 
     const onChange = (e) => {
         setLoginForm((prevState) => ({
@@ -58,15 +62,40 @@ function Welcome() {
         }));
     };
 
+    const verifyNum = (e) => {
+        e.preventDefault();
+
+        setOtpSent(true);
+
+        const userData = {
+            mobileNumber,
+        };
+
+        dispatch(verifyNumber(userData));
+    };
+
+    const verifyOtp = async (e) => {
+        e.preventDefault();
+
+        const userData = {
+            otpNumber,
+        };
+
+        //console.log(userData.otpCode);
+        await dispatch(verifyOtpNumber(userData));
+
+        setOpen(false);
+    };
+
     const onSubmit = (e) => {
         e.preventDefault();
 
         const userData = {
-            otpCode,
+            emailAddress,
+            password,
         };
 
-        dispatch(verifyOtpNumber(userData));
-        // dispatch(login(userData));
+        dispatch(login(userData));
     };
 
     if (isLoading) {
@@ -150,9 +179,11 @@ function Welcome() {
 
                         <div>
                             <button
-                                type="submit"
+                                type="button"
                                 className="group relative flex w-full justify-center rounded-md border border-transparent bg-red-600 py-2 px-4 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                onClick={() => setOpen(true)}
+                                onClick={
+                                    otpSent ? onSubmit : () => setOpen(true)
+                                }
                             >
                                 Sign in
                             </button>
@@ -167,37 +198,39 @@ function Welcome() {
                 title={"Verify its you."}
                 body={
                     <>
-                        {otpSent ? (
+                        <div className="mt-2">
+                            <label
+                                htmlFor="mobileNumber"
+                                className="block text-sm font-medium text-gray-700"
+                            >
+                                Mobile Number:
+                            </label>
+                            <input
+                                type="text"
+                                id="mobileNumber"
+                                value={mobileNumber}
+                                onChange={(e) =>
+                                    setMobileNumber(e.target.value)
+                                }
+                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                placeholder="+639xxxxxxxxx"
+                            />
+                        </div>
+
+                        {otpSent && (
                             <div className="mt-2">
                                 <label
-                                    htmlFor="otpCode"
+                                    htmlFor="otpNumber"
                                     className="block text-sm font-medium text-gray-700"
                                 >
                                     OTP:
                                 </label>
                                 <input
                                     type="text"
-                                    id="otpCode"
-                                    value={otpCode}
-                                    onChange={(e) => setOtpCode(e.target.value)}
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                    placeholder="Enter the otp code sent to your mobile number"
-                                />
-                            </div>
-                        ) : (
-                            <div className="mt-2">
-                                <label
-                                    htmlFor="mobileNumber"
-                                    className="block text-sm font-medium text-gray-700"
-                                >
-                                    Mobile Number:
-                                </label>
-                                <input
-                                    type="text"
-                                    id="mobileNumber"
-                                    value={mobileNumber}
+                                    id="otpNumber"
+                                    value={otpNumber}
                                     onChange={(e) =>
-                                        setMobileNumber(e.target.value)
+                                        setOtpNumber(e.target.value)
                                     }
                                     className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                     placeholder="+639xxxxxxxxx"
@@ -218,9 +251,7 @@ function Welcome() {
                         <button
                             type="button"
                             className="bg-red-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600"
-                            onClick={
-                                otpSent ? onSubmit : () => setOtpSent(true)
-                            }
+                            onClick={otpSent ? verifyOtp : verifyNum}
                         >
                             {otpSent ? "Submit" : "Send OTP"}
                         </button>
