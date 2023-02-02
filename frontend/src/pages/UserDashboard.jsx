@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 
-import axios from "axios";
-
 import { useSelector, useDispatch } from "react-redux";
 
 import { Modal } from "../components/Modal";
 
-import { useNavigate } from "react-router-dom";
+// import { SelectAccount } from "../components/SelectAccount";
 
 import { toast } from "react-toastify";
 
@@ -28,15 +26,15 @@ function UserDashboard() {
 
     const [isTransferring, setIsTransferring] = useState(false);
 
+    // const [destinationAccount, setDestinationAccount] = useState({});
+
     const [amount, setAmount] = useState(0);
 
     const [errorMessage, setErrorMessage] = useState("");
 
     const dispatch = useDispatch();
 
-    const navigate = useNavigate();
-
-    const { user, isError, message } = useSelector((state) => state.auth);
+    const { isLoading, isError, message } = useSelector((state) => state.auth);
 
     useEffect(() => {
         const userData = JSON.parse(localStorage.getItem("user"));
@@ -45,10 +43,6 @@ function UserDashboard() {
             setUserData(userData);
         }
     }, []);
-
-    // const user = JSON.parse(localStorage.getItem("user"));
-
-    // const token = user.token;
 
     useEffect(() => {
         if (isError) {
@@ -65,23 +59,41 @@ function UserDashboard() {
         };
     }, [dispatch]);
 
-    const deposit = (error) => {
+    const deposit = () => {
         const userData = {
             amount,
         };
 
-        if (userData) {
+        if (amount >= 100) {
             dispatch(depositMoney(userData));
 
             toast.success("Deposit Successful");
 
             setOpen(false);
         } else {
-            toast.error(error);
+            toast.error("Minimum amount is PHP 100");
 
             setOpen(false);
         }
     };
+
+    // const getAccounts = () => {
+    //     const userData = {
+    //         amount,
+    //     };
+
+    //     if (amount >= 100) {
+    //         dispatch(depositMoney(userData));
+
+    //         toast.success("Deposit Successful");
+
+    //         setOpen(false);
+    //     } else {
+    //         toast.error("Minimum amount is PHP 100");
+
+    //         setOpen(false);
+    //     }
+    // };
 
     const transfer = () => {
         const userData = {
@@ -96,6 +108,10 @@ function UserDashboard() {
 
         setOpen(false);
     };
+
+    if (isLoading) {
+        return <Spinner />;
+    }
     return (
         <>
             <section className="container shadow-lg">
@@ -139,6 +155,7 @@ function UserDashboard() {
                                     onClick={() => {
                                         setIsTransferring(true);
                                         setOpen(true);
+                                        //getAccounts;
                                     }}
                                 >
                                     Transfer
@@ -159,16 +176,16 @@ function UserDashboard() {
                 }
                 body={
                     <>
-                        {isTransferring && (
+                        {/* {isTransferring && (
                             <div className="mt-2">
-                                {/* <SelectContact
-                                    title="Destination contact"
-                                    contacts={contacts}
-                                    contact={destinationWallet}
-                                    setContact={setDestinationWallet}
-                                /> */}
+                                <SelectAccount
+                                    title="Destination Account"
+                                    accounts={acounts}
+                                    account={destinationAccount}
+                                    setAccount={setDestinationAccount}
+                                />
                             </div>
-                        )}
+                        )} */}
 
                         <div className="mt-2">
                             <label

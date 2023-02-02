@@ -6,9 +6,16 @@ import { useNavigate } from "react-router-dom";
 
 import { toast } from "react-toastify";
 
-import { login, reset } from "../features/auth/authSlice";
+import {
+    login,
+    verifyNumber,
+    verifyOtpNumber,
+    reset,
+} from "../features/auth/authSlice";
 
 import Spinner from "../components/Spinner";
+
+import { Modal } from "../components/Modal";
 
 function Welcome() {
     const [loginForm, setLoginForm] = useState({
@@ -17,6 +24,16 @@ function Welcome() {
     });
 
     const { emailAddress, password } = loginForm;
+
+    const [open, setOpen] = useState(false);
+
+    const [otpCode, setOtpCode] = useState("");
+
+    const [otpSent, setOtpSent] = useState(false);
+
+    const [mobileNumber, setMobileNumber] = useState("");
+
+    const [errorMessage, setErrorMessage] = useState("");
 
     const navigate = useNavigate();
 
@@ -31,12 +48,8 @@ function Welcome() {
             toast.error(message);
         }
 
-        if (isSuccess) {
-            navigate("/user");
-        }
-
         dispatch(reset());
-    }, [user, isError, isSuccess, message, navigate, dispatch]);
+    }, [user, isError, message, navigate, dispatch]);
 
     const onChange = (e) => {
         setLoginForm((prevState) => ({
@@ -49,11 +62,11 @@ function Welcome() {
         e.preventDefault();
 
         const userData = {
-            emailAddress,
-            password,
+            otpCode,
         };
 
-        dispatch(login(userData));
+        dispatch(verifyOtpNumber(userData));
+        // dispatch(login(userData));
     };
 
     if (isLoading) {
@@ -139,6 +152,7 @@ function Welcome() {
                             <button
                                 type="submit"
                                 className="group relative flex w-full justify-center rounded-md border border-transparent bg-red-600 py-2 px-4 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                onClick={() => setOpen(true)}
                             >
                                 Sign in
                             </button>
@@ -146,6 +160,74 @@ function Welcome() {
                     </form>
                 </div>
             </div>
+
+            <Modal
+                open={open}
+                setOpen={setOpen}
+                title={"Verify its you."}
+                body={
+                    <>
+                        {otpSent ? (
+                            <div className="mt-2">
+                                <label
+                                    htmlFor="otpCode"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    OTP:
+                                </label>
+                                <input
+                                    type="text"
+                                    id="otpCode"
+                                    value={otpCode}
+                                    onChange={(e) => setOtpCode(e.target.value)}
+                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                    placeholder="Enter the otp code sent to your mobile number"
+                                />
+                            </div>
+                        ) : (
+                            <div className="mt-2">
+                                <label
+                                    htmlFor="mobileNumber"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Mobile Number:
+                                </label>
+                                <input
+                                    type="text"
+                                    id="mobileNumber"
+                                    value={mobileNumber}
+                                    onChange={(e) =>
+                                        setMobileNumber(e.target.value)
+                                    }
+                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                    placeholder="+639xxxxxxxxx"
+                                />
+                            </div>
+                        )}
+                    </>
+                }
+                footer={
+                    <>
+                        <button
+                            type="button"
+                            className="bg-black border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-600"
+                            onClick={() => setOpen(false)}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="button"
+                            className="bg-red-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600"
+                            onClick={
+                                otpSent ? onSubmit : () => setOtpSent(true)
+                            }
+                        >
+                            {otpSent ? "Submit" : "Send OTP"}
+                        </button>
+                    </>
+                }
+                errorMessage={errorMessage}
+            />
         </>
     );
 }
