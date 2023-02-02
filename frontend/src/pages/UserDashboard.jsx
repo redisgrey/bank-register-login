@@ -36,48 +36,51 @@ function UserDashboard() {
 
     const navigate = useNavigate();
 
+    const { user, isError, message } = useSelector((state) => state.auth);
+
     useEffect(() => {
         const userData = JSON.parse(localStorage.getItem("user"));
 
         if (userData) {
             setUserData(userData);
         }
-
-        // console.log(userData);
     }, []);
 
-    const user = JSON.parse(localStorage.getItem("user"));
+    // const user = JSON.parse(localStorage.getItem("user"));
 
-    const token = user.token;
+    // const token = user.token;
 
     useEffect(() => {
-        async function fetchBalance() {
-            const result = await dispatch(checkBalance());
-
-            if (result) {
-                setBalance(Number(result.payload));
-            }
-
-            console.log(result.payload);
+        if (isError) {
+            toast.error(message);
         }
 
-        if (token) {
-            fetchBalance();
-        }
+        dispatch(checkBalance()).then((response) => {
+            //console.log(response.payload.accountBalance);
+            setBalance(response.payload.accountBalance);
+        });
 
-        // console.log(userData);
-    }, [token]);
+        return () => {
+            dispatch(reset());
+        };
+    }, [dispatch]);
 
-    const deposit = () => {
+    const deposit = (error) => {
         const userData = {
             amount,
         };
 
-        dispatch(depositMoney(userData));
+        if (userData) {
+            dispatch(depositMoney(userData));
 
-        toast.success("Deposit Successful");
+            toast.success("Deposit Successful");
 
-        setOpen(false);
+            setOpen(false);
+        } else {
+            toast.error(error);
+
+            setOpen(false);
+        }
     };
 
     const transfer = () => {

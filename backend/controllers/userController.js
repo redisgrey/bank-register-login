@@ -941,7 +941,10 @@ const checkBalance = asyncHandler(async (req, res) => {
             // Get user from the token
             const user = await User.findById(decoded.id).select("-password");
 
-            res.json(user.accountBalance);
+            res.json({
+                token: generateToken(user._id),
+                accountBalance: user.accountBalance,
+            });
         } catch (error) {
             console.log(error);
 
