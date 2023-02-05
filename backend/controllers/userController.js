@@ -28,7 +28,7 @@ const registerUser = asyncHandler(async (req, res) => {
         fullName,
         dateOfBirth,
         emailAddress,
-        password,
+        //password,
         mobileNumber,
         homeAddress,
         gender,
@@ -43,7 +43,6 @@ const registerUser = asyncHandler(async (req, res) => {
         !fullName ||
         !dateOfBirth ||
         !emailAddress ||
-        !password ||
         !mobileNumber ||
         !homeAddress ||
         !gender ||
@@ -58,31 +57,31 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     // Check password if admin password then hash
-    let adminPassword = process.env.ADMIN_PASSWORD;
-    if (password === adminPassword) {
-        // Hash the password
-        const salt = await bcrypt.genSalt(10);
+    // let adminPassword = process.env.ADMIN_PASSWORD;
+    // if (password === adminPassword) {
+    //     // Hash the password
+    //     const salt = await bcrypt.genSalt(10);
 
-        var hashedPassword = await bcrypt.hash(password, salt);
+    //     var hashedPassword = await bcrypt.hash(password, salt);
 
-        //set isAdmin to true
-        isAdmin = true;
-    }
+    //     //set isAdmin to true
+    //     isAdmin = true;
+    // }
 
     // Check password pattern
-    let passwordFormat =
-        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
+    // let passwordFormat =
+    //     /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
 
-    if (password.match(passwordFormat) && password !== adminPassword) {
-        // Hash the password
-        const salt = await bcrypt.genSalt(10);
+    // if (password.match(passwordFormat) && password !== adminPassword) {
+    //     // Hash the password
+    //     const salt = await bcrypt.genSalt(10);
 
-        var hashedPassword = await bcrypt.hash(password, salt);
-    } else {
-        res.json(
-            "Password should be between 8 to 15 characters which contain at least one lowercase letter, one uppercase letter, one numeric digit, and one special character"
-        );
-    }
+    //     var hashedPassword = await bcrypt.hash(password, salt);
+    // } else {
+    //     res.json(
+    //         "Password should be between 8 to 15 characters which contain at least one lowercase letter, one uppercase letter, one numeric digit, and one special character"
+    //     );
+    // }
 
     // Check Mobile Number Pattern
     let mobileNumberPattern = /(^(\+)(\d){12}$)/;
@@ -107,7 +106,7 @@ const registerUser = asyncHandler(async (req, res) => {
         fullName,
         dateOfBirth,
         emailAddress,
-        password: hashedPassword,
+        //password,
         mobileNumber: validMobileNumber,
         homeAddress,
         gender,
@@ -138,7 +137,7 @@ const verifyNumber = asyncHandler(async (req, res) => {
     // Check if user exists
     const userExists = await User.findOne({ mobileNumber: mobileNumber });
 
-    if (userExists && userExists.isVerified === false) {
+    if (userExists) {
         const OTP = otpGenerator.generate(6, {
             digits: true,
             upperCaseAlphabets: false,
@@ -192,11 +191,43 @@ const verifyCode = asyncHandler(async (req, res) => {
 
     const validUser = await bcrypt.compare(otpNumber, rightOtpFind.otp);
 
-    if (validUser) {
-        // isVerify User
+    const user = await User.findOne({ mobileNumber: rightOtpFind.number });
+
+    if (validUser && user.isInitialVerified === false) {
         const updateVerify = await User.updateOne(
             { mobileNumber: rightOtpFind.number },
-            { $set: { isVerified: true } }
+            { $set: { isInitialVerified: true } }
+        );
+
+        const OTPDelete = OTPModel.deleteMany({
+            number: rightOtpFind.number,
+        });
+
+        res.json("Verification Successful!");
+    } else if (
+        validUser &&
+        user.isInitialVerified === true &&
+        user.isOlBankRegVerified === false
+    ) {
+        const updateVerify = await User.updateOne(
+            { mobileNumber: rightOtpFind.number },
+            { $set: { isOlBankRegVerified: true } }
+        );
+
+        const OTPDelete = OTPModel.deleteMany({
+            number: rightOtpFind.number,
+        });
+
+        res.json("Verification Successful!");
+    } else if (
+        validUser &&
+        user.isInitialVerified === true &&
+        user.isOlBankRegVerified === true &&
+        user.isLoginVerified === false
+    ) {
+        const updateVerify = await User.updateOne(
+            { mobileNumber: rightOtpFind.number },
+            { $set: { isLoginVerified: true } }
         );
 
         const OTPDelete = OTPModel.deleteMany({
@@ -205,11 +236,9 @@ const verifyCode = asyncHandler(async (req, res) => {
 
         res.json("Verification Successful!");
     } else {
-        // const accountDelete = User.deleteOne({
-        //     number: mobileNumber,
-        // });
+        res.status(400);
 
-        res.json("You input an invalid mobile number / OTP number");
+        throw new Error("You input an invalid otp code");
     }
 });
 
@@ -443,26 +472,44 @@ const loginAdmin = asyncHandler(async (req, res) => {
 
 // @desc    Get all users
 // @route   GET /api/users/
-// @access  Private(admin)
+// @access  Private(user)
 const viewAccounts = asyncHandler(async (req, res) => {
-    let { emailAddress, password } = req.body;
-
-    // Validate User
-    const user = await User.findOne({ emailAddress });
+    let token;
 
     if (
         protect &&
-        user &&
-        password === process.env.ADMIN_PASSWORD &&
-        user.isAdmin === true &&
-        user.isVerified === true
+        req.headers.authorization &&
+        req.headers.authorization.startsWith("Bearer")
     ) {
-        const usersNotAdmin = await User.find(
-            { isAdmin: false },
-            { password: 0 }
-        );
+        try {
+            // Get token from header
+            token = req.headers.authorization.split(" ")[1];
 
-        res.json(usersNotAdmin);
+            // verify token
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+            // Get user from the token
+            const user = await User.findById(decoded.id).select("-password");
+
+            if (protect && user) {
+                const usersNotAdmin = await User.find(
+                    { isAdmin: false },
+                    {
+                        fullName: 1,
+                        emailAddress: 1,
+                        accountNumber: 1,
+                    }
+                );
+
+                res.json(usersNotAdmin);
+            }
+        } catch (error) {
+            console.log(error);
+
+            res.status(401);
+
+            throw new Error("Not Authorized");
+        }
     }
 });
 

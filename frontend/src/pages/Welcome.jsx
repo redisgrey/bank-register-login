@@ -151,16 +151,28 @@ function Welcome() {
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-between">
+                        <div className="flex flex-col mt-0">
                             <div className="">
-                                <span className="ml-2 text-sm text-gray-900">
-                                    Still not registered?
+                                <span className="ml-2 text-sm text-gray-700">
+                                    Still not registered to Online Banking?
                                 </span>
                                 <a
                                     href="/register-online"
                                     className="text-sm font-medium ml-1 text-red-600 hover:text-red-800 no-underline"
                                 >
                                     Sign Up
+                                </a>
+                            </div>
+
+                            <div className="">
+                                <span className="ml-2 text-sm text-gray-700">
+                                    Does not have an account in MyBank?
+                                </span>
+                                <a
+                                    href="/register"
+                                    className="text-sm font-medium ml-1 text-red-600 hover:text-red-800 no-underline"
+                                >
+                                    Register
                                 </a>
                             </div>
 

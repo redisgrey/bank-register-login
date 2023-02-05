@@ -6,16 +6,16 @@ import { useNavigate } from "react-router-dom";
 
 import { toast } from "react-toastify";
 
-import { verifyOtpNumber, reset } from "../features/auth/authSlice";
+import { verifyNumber, reset } from "../features/auth/authSlice";
 
 import Spinner from "../components/Spinner";
 
-function VerifyCode() {
+function InitialVerifyNumber() {
     const [otpVerification, setOtpVerification] = useState({
-        otpNumber: "",
+        mobileNumber: "",
     });
 
-    const { otpNumber } = otpVerification;
+    const { mobileNumber } = otpVerification;
 
     const navigate = useNavigate();
 
@@ -31,7 +31,7 @@ function VerifyCode() {
         }
 
         if (isSuccess) {
-            navigate("/success-register-online");
+            navigate("/initial-verify-code");
         }
 
         dispatch(reset());
@@ -48,10 +48,10 @@ function VerifyCode() {
         e.preventDefault();
 
         const userData = {
-            otpNumber,
+            mobileNumber,
         };
 
-        dispatch(verifyOtpNumber(userData));
+        dispatch(verifyNumber(userData));
     };
 
     if (isLoading) {
@@ -69,24 +69,27 @@ function VerifyCode() {
                             alt="MyBank Logo"
                         />
                         <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-                            Enter the code sent
+                            Verify your Mobile Number
                         </h2>
                     </div>
                     <form className="mt-8 space-y-6" onSubmit={onSubmit}>
                         <div className="-space-y-px rounded-md shadow-sm">
                             <div>
-                                <label htmlFor="otpNumber" className="sr-only">
-                                    OTP Code:
+                                <label
+                                    htmlFor="mobileNumber"
+                                    className="sr-only"
+                                >
+                                    Mobile Number
                                 </label>
                                 <input
-                                    id="otpNumber"
-                                    name="otpNumber"
-                                    value={otpNumber}
+                                    id="mobileNumber"
+                                    name="mobileNumber"
+                                    value={mobileNumber}
                                     onChange={onChange}
                                     type="text"
                                     required
                                     className="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                                    placeholder="Enter the OTP code"
+                                    placeholder="+639xxxxxxxxx"
                                 />
                             </div>
                         </div>
@@ -96,7 +99,7 @@ function VerifyCode() {
                                 type="submit"
                                 className="group relative flex w-full justify-center rounded-md border border-transparent bg-red-600 py-2 px-4 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                             >
-                                Submit
+                                Send OTP
                             </button>
                         </div>
                     </form>
@@ -106,4 +109,4 @@ function VerifyCode() {
     );
 }
 
-export default VerifyCode;
+export default InitialVerifyNumber;

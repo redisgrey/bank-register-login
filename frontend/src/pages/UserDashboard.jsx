@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { Modal } from "../components/Modal";
 
-// import { SelectAccount } from "../components/SelectAccount";
+import { SelectAccount } from "../components/SelectAccount";
 
 import { toast } from "react-toastify";
 
@@ -26,7 +26,7 @@ function UserDashboard() {
 
     const [isTransferring, setIsTransferring] = useState(false);
 
-    // const [destinationAccount, setDestinationAccount] = useState({});
+    const [destinationAccount, setDestinationAccount] = useState({});
 
     const [amount, setAmount] = useState(0);
 
@@ -115,7 +115,7 @@ function UserDashboard() {
     return (
         <>
             <section className="container shadow-lg">
-                <div className="flex  mt-5 mx-auto md:w-[50%] ">
+                <div className="flex mx-auto md:w-[50%] ">
                     <form className="flex-auto p-6">
                         <div className="w-full flex-none text-sm font-medium text-gray-500 mt-2">
                             {userData.accountType}
@@ -176,16 +176,16 @@ function UserDashboard() {
                 }
                 body={
                     <>
-                        {/* {isTransferring && (
+                        {isTransferring && (
                             <div className="mt-2">
                                 <SelectAccount
                                     title="Destination Account"
-                                    accounts={acounts}
+                                    //accounts={accounts}
                                     account={destinationAccount}
                                     setAccount={setDestinationAccount}
                                 />
                             </div>
-                        )} */}
+                        )}
 
                         <div className="mt-2">
                             <label

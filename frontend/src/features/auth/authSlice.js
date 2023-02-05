@@ -305,6 +305,26 @@ export const updateProfile = createAsyncThunk(
     }
 );
 
+// View Accounts (user)
+export const viewAccounts = createAsyncThunk(
+    "auth/view-accounts",
+    async (user, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().auth.user.token;
+            return await authService.viewAccounts(user, token);
+        } catch (error) {
+            const message =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+
+            return thunkAPI.rejectWithValue(message);
+        }
+    }
+);
+
 // Deposit Money (user)
 export const depositMoney = createAsyncThunk(
     "auth/deposit",
@@ -523,6 +543,20 @@ export const authSlice = createSlice({
                 state.user = action.payload;
             })
             .addCase(updateProfile.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.message = action.payload;
+                state.user = null;
+            })
+            .addCase(viewAccounts.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(viewAccounts.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                state.user = action.payload;
+            })
+            .addCase(viewAccounts.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
                 state.message = action.payload;

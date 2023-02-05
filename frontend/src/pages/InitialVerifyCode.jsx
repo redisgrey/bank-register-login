@@ -10,7 +10,7 @@ import { verifyOtpNumber, reset } from "../features/auth/authSlice";
 
 import Spinner from "../components/Spinner";
 
-function VerifyCode() {
+function InitialVerifyCode() {
     const [otpVerification, setOtpVerification] = useState({
         otpNumber: "",
     });
@@ -31,7 +31,7 @@ function VerifyCode() {
         }
 
         if (isSuccess) {
-            navigate("/success-register-online");
+            navigate("/success-register");
         }
 
         dispatch(reset());
@@ -106,4 +106,4 @@ function VerifyCode() {
     );
 }
 
-export default VerifyCode;
+export default InitialVerifyCode;

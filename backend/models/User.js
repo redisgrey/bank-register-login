@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
 
-        required: [true, "Please input your password"],
+        default: "to follow",
     },
 
     homeAddress: {
@@ -62,7 +62,7 @@ const userSchema = new mongoose.Schema({
     },
 
     grossMonthlyIncome: {
-        type: Number,
+        type: String,
 
         required: [true, "Please input your gross monthly income"],
     },
@@ -76,28 +76,22 @@ const userSchema = new mongoose.Schema({
     status: {
         type: String,
 
-        default: "active",
+        default: "pending",
     },
 
-    isVerified: {
+    isInitialVerified: {
         type: Boolean,
 
         default: false,
     },
 
-    authDeposit: {
+    isOlBankRegVerified: {
         type: Boolean,
 
         default: false,
     },
 
-    authWithdraw: {
-        type: Boolean,
-
-        default: false,
-    },
-
-    authTransfer: {
+    isLoginVerified: {
         type: Boolean,
 
         default: false,

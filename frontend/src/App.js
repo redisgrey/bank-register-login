@@ -14,7 +14,7 @@ import Login from "./pages/Login";
 
 import LoginAdmin from "./pages/LoginAdmin";
 
-// import Register from "./pages/Register";
+import Register from "./pages/Register";
 
 import VerifyNumber from "./pages/VerifyNumber";
 
@@ -54,6 +54,10 @@ import VerifyTransfer from "./pages/VerifyTransfer";
 
 import VerifyTransCode from "./pages/VerifyTransCode";
 
+import InitialVerifyNumber from "./pages/InitialVerifyNumber";
+
+import InitialVerifyCode from "./pages/InitialVerifyCode";
+
 function App() {
     return (
         <>
@@ -71,11 +75,21 @@ function App() {
 
                         <Route path="/login-admin" element={<LoginAdmin />} />
 
-                        {/* <Route path="/register" element={<Register />} /> */}
+                        <Route path="/register" element={<Register />} />
 
                         <Route
                             path="/register-online"
                             element={<RegisterOnlineBank />}
+                        />
+
+                        <Route
+                            path="/initial-verify-number"
+                            element={<InitialVerifyNumber />}
+                        />
+
+                        <Route
+                            path="/initial-verify-code"
+                            element={<InitialVerifyCode />}
                         />
 
                         <Route

@@ -120,6 +120,19 @@ const updateProfile = async (userData, user) => {
     return response.data;
 };
 
+// View Accounts
+const viewAccounts = async (user) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${user}`,
+        },
+    };
+
+    const response = await axios.get("/api/users/", config);
+
+    return response.data;
+};
+
 // Deposit Money
 const depositMoney = async (userData, user) => {
     const config = {
@@ -215,7 +228,7 @@ const verifyWdrawCode = async (userData, user) => {
 };
 
 // Check Account Balance
-const checkBalance = async (userData, user) => {
+const checkBalance = async (user) => {
     const config = {
         headers: {
             Authorization: `Bearer ${user}`,
@@ -294,6 +307,7 @@ const authService = {
     updateStatus,
     registerOnlineBanking,
     updateProfile,
+    viewAccounts,
     depositMoney,
     withdrawMoney,
     transferMoney,
