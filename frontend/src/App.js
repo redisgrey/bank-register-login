@@ -58,6 +58,8 @@ import InitialVerifyNumber from "./pages/InitialVerifyNumber";
 
 import InitialVerifyCode from "./pages/InitialVerifyCode";
 
+import RegisterAdmin from "./pages/RegisterAdmin";
+
 function App() {
     return (
         <>
@@ -80,6 +82,11 @@ function App() {
                         <Route
                             path="/register-online"
                             element={<RegisterOnlineBank />}
+                        />
+
+                        <Route
+                            path="/register/admin"
+                            element={<RegisterAdmin />}
                         />
 
                         <Route

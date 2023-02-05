@@ -18,6 +18,7 @@ const twilio = require("twilio")(
 const { protect } = require("../middlewares/authMiddleware");
 
 const asyncHandler = require("express-async-handler");
+
 const OTPModel = require("../models/OTPModel");
 
 // @desc    Register New User

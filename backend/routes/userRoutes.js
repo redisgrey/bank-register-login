@@ -70,4 +70,5 @@ router.post("/verify-transfer", protect, verifyTransfer);
 router.post("/verify-transcode", protect, verifyTransCode);
 
 router.get("/balance", protect, checkBalance);
+
 module.exports = router;

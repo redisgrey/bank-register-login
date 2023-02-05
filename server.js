@@ -29,4 +29,6 @@ app.use(express.urlencoded({ extended: true }));
 // * ROUTES
 app.use("/api/users", require("./backend/routes/userRoutes"));
 
+app.use("/api/admin", require("./backend/routes/adminRoutes"));
+
 app.listen(PORT, () => console.log(`Server running at PORT ${PORT}`));
