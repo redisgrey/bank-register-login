@@ -92,8 +92,6 @@ function RegisterAdmin() {
         dispatch(registerAdmin(userData));
 
         navigate("/success-register-admin");
-
-        // add verification alert then click sign in bla bla
     };
 
     if (isLoading) {
