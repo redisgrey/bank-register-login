@@ -60,6 +60,8 @@ import InitialVerifyCode from "./pages/InitialVerifyCode";
 
 import RegisterAdmin from "./pages/RegisterAdmin";
 
+import SuccessRegAdmin from "./pages/SuccessRegAdmin";
+
 function App() {
     return (
         <>
@@ -147,6 +149,11 @@ function App() {
                         <Route
                             path="/success-register"
                             element={<SuccessRegisterMess />}
+                        />
+
+                        <Route
+                            path="/success-register-admin"
+                            element={<SuccessRegAdmin />}
                         />
 
                         <Route

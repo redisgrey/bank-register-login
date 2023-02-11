@@ -65,7 +65,13 @@ function RegisterAdmin() {
             superAdminPassword,
         };
 
-        await dispatch(verifySuperAdmin(userData));
+        const success = await dispatch(verifySuperAdmin(userData));
+
+        if (success) {
+            toast.success(
+                "Super Admin Verification Successful. Click Register Admin to continue."
+            );
+        }
 
         setOpen(false);
 
@@ -85,8 +91,8 @@ function RegisterAdmin() {
         // console.log(userData);
         dispatch(registerAdmin(userData));
 
-        navigate("/success-register-online");
-        //to change to success-admin-register
+        navigate("/success-register-admin");
+
         // add verification alert then click sign in bla bla
     };
 
